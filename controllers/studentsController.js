@@ -69,7 +69,32 @@ const getAllStudents = (req, res) => {
 
 // edit students
 const updateStudents = (req, res) => {
-    res.send(`Put Route Done with id ${req.params.id}`)
+  
+    let id = req.params.id;
+    
+ if(!students.some(data => data.id == id)){
+    res.status(404).json({
+        Message : "Data Not Found"
+    })
+ }
+
+ if(req.body.name == '' || req.body.age == '' || req.body.skill == ''){
+    res.status(404).json({
+        Message : "All Feild Are Required"
+    })
+ }else{
+    students[(students.findIndex(data => data.id == id))]={
+        name  : req.body.name,
+        age   : req.body.age,
+        skill : req.body.skill
+    }
+
+    fs.writeFileSync(path.join(__dirname, '../data/db.json'),JSON.stringify(students))
+    
+    res.status(201).json({
+        Message : "Data Updated Succesfull"
+    })
+ }
 }
 
 // delete students 
